@@ -24,6 +24,10 @@ export class Order {
   @Prop({ required: true, default: 0 })
   @Field(() => Int)
   interest_rate: number;
+
+  @Prop({ default: new Date() })
+  @Field({ nullable: false })
+  created_at: number;
 }
 
 @ObjectType()
