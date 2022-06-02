@@ -5,11 +5,10 @@ import { Field, Int, ObjectType, InputType } from '@nestjs/graphql';
 export type OrderDocument = Order & Document;
 
 @Schema()
-@ObjectType()
+@ObjectType({ description: 'Order Model' })
 export class Order {
   @Prop({
     type: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    required: true,
   })
   @Field({ nullable: false })
   user: string;
@@ -28,7 +27,7 @@ export class Order {
 }
 
 @InputType()
-export class OrderInput {
+export class CreateOrderInput {
   @Field({ nullable: false })
   user: string;
 

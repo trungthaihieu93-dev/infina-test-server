@@ -1,13 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Field, Int, ObjectType, InputType } from '@nestjs/graphql';
+import {
+  Field,
+  Int,
+  ObjectType,
+  InputType,
+  PartialType,
+} from '@nestjs/graphql';
 
 import { GENDERS } from 'src/core/constants/enums';
 
 export type UserDocument = User & Document;
 
 @Schema()
-@ObjectType()
+@ObjectType({ description: 'User Model' })
 export class User {
   @Prop({ required: true })
   @Field({ nullable: false })
@@ -30,8 +36,14 @@ export class User {
   gender: string;
 }
 
+@ObjectType({ description: 'User Model' })
+export class UserWithOrderAmount extends User {
+  @Field(() => Int)
+  total_amount: number;
+}
+
 @InputType()
-export class UserInput {
+export class CreateUserInput {
   @Field({ nullable: false })
   full_name: string;
 
@@ -47,6 +59,9 @@ export class UserInput {
   @Field({ nullable: true })
   gender: string;
 }
+
+@InputType()
+export class UpdateUserInput extends PartialType(CreateUserInput) {}
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
