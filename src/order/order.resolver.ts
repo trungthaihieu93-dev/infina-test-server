@@ -1,6 +1,6 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 
-import { Order, CreateOrderInput } from './order.model';
+import { Order, CreateOrderInput, OrderWithAccruedAmount } from './order.model';
 
 import { OrderService } from './order.service';
 
@@ -15,7 +15,10 @@ export class OrderResolver {
     return this.orderService.getOrderByUser(userId);
   }
 
-  @Query((returns) => Order, { name: 'order', nullable: false })
+  @Query((returns) => OrderWithAccruedAmount, {
+    name: 'order',
+    nullable: false,
+  })
   async getOrderById(@Args({ name: 'id' }) orderId: string): Promise<Order> {
     return this.orderService.getOrderById(orderId);
   }

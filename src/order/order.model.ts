@@ -17,13 +17,19 @@ export class Order {
   @Field({ nullable: false })
   code: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: 0 })
   @Field(() => Int)
   amount: number;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: 0 })
   @Field(() => Int)
   interest_rate: number;
+}
+
+@ObjectType()
+export class OrderWithAccruedAmount extends Order {
+  @Field(() => [Int])
+  accrued_amount: number[];
 }
 
 @InputType()

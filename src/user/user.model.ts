@@ -9,12 +9,16 @@ import {
 } from '@nestjs/graphql';
 
 import { GENDERS } from 'src/core/constants/enums';
+import { checkPhoneMiddleware } from 'src/core/middlewares/graphql';
 
 export type UserDocument = User & Document;
 
 @Schema()
 @ObjectType({ description: 'User Model' })
 export class User {
+  @Field({ nullable: false })
+  _id: string;
+
   @Prop({ required: true })
   @Field({ nullable: false })
   full_name: string;
@@ -27,8 +31,8 @@ export class User {
   @Field({ nullable: true })
   email: string;
 
-  @Prop({})
-  @Field(() => Int)
+  @Prop()
+  @Field({ nullable: true })
   age: number;
 
   @Prop({ enum: GENDERS })
@@ -47,7 +51,7 @@ export class CreateUserInput {
   @Field({ nullable: false })
   full_name: string;
 
-  @Field({ nullable: false })
+  @Field({ nullable: false, middleware: [checkPhoneMiddleware] })
   phone: string;
 
   @Field({ nullable: true })

@@ -13,6 +13,11 @@ import { UserService } from './user.service';
 export class UserResolver {
   constructor(private userService: UserService) {}
 
+  @Query((returns) => [User], { name: 'users', nullable: false })
+  async getUsers() {
+    return this.userService.getAllUsers();
+  }
+
   @Query((returns) => UserWithOrderAmount, { name: 'user', nullable: false })
   async getUserById(@Args({ name: 'id' }) id: string) {
     return this.userService.getUserById(id);

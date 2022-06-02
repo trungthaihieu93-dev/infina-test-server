@@ -15,5 +15,6 @@ import { OrderResolver } from './order.resolver';
   ],
   controllers: [OrderController],
   providers: [OrderService, OrderResolver],
+  exports: [OrderService],
 })
 export class OrderModule {}

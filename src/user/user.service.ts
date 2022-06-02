@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { OrderService } from 'src/order/order.service';
 
 import {
   UserSchemaName,
@@ -8,16 +9,34 @@ import {
   User,
   CreateUserInput,
   UpdateUserInput,
+  UserWithOrderAmount,
 } from './user.model';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(UserSchemaName) private userModel: Model<UserDocument>,
+    @Inject(forwardRef(() => OrderService))
+    private orderService: OrderService,
   ) {}
 
-  async getUserById(userId: string): Promise<User> {
-    return this.userModel.findById(userId);
+  async getAllUsers(): Promise<User[]> {
+    return this.userModel.find();
+  }
+
+  async getUserById(userId: string): Promise<UserWithOrderAmount> {
+    const ordersByUser = await this.orderService.getOrderByUser(userId);
+
+    const total_amount = ordersByUser.reduce((a, b) => a + b.amount, 0);
+
+    const user = await this.userModel.findById(userId).lean();
+
+    const userWithOrderAmount: UserWithOrderAmount = {
+      ...user,
+      total_amount,
+    };
+
+    return userWithOrderAmount;
   }
 
   async createOrUpdateUser(
